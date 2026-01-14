@@ -1,0 +1,39 @@
+// prisma/schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Stores the user's answers and the AI's raw analysis
+model AssessmentSession {
+  id          String   @id @default(uuid())
+  createdAt   DateTime @default(now())
+  answers     Json     // Storing the raw QA pairs
+  resultSummary String? @db.Text
+  
+  // Relations
+  recommendations Recommendation[]
+}
+
+// Specific Career/Degree recommendations linked to a session
+model Recommendation {
+  id          String   @id @default(uuid())
+  sessionId   String
+  session     AssessmentSession @relation(fields: [sessionId], references: [id])
+  
+  title       String
+  type        String   // "CAREER" or "DEGREE"
+  matchScore  Int      // 0-100
+  matchReason String   // "Why this fits"
+  
+  // Detail View Data
+  overview    String   @db.Text
+  skills      String[] // Array of strings for Skill Cloud
+  difficulty  String   // Easy, Moderate, Hard
+  futureScope String   // Low, Medium, High
+}
