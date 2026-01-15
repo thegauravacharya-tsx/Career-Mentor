@@ -37,7 +37,7 @@ export function AuthLayout({ children, title, subtitle }: AuthLayoutProps) {
         className="relative z-10 w-full max-w-[420px] bg-white/80 backdrop-blur-xl rounded-[24px] shadow-[0_20px_40px_-12px_rgba(0,0,0,0.06)] border border-white/60 p-8 sm:p-10"
       >
         <div className="text-center mb-10">
-            {/* Typography Upgrade: Tight tracking, semibold instead of bold, specific leading */}
+            {/* Typography Upgrade */}
             <h1 className="text-[26px] font-semibold text-[#0F172A] mb-3 tracking-[-0.025em] leading-tight">
                 {title}
             </h1>
@@ -45,10 +45,9 @@ export function AuthLayout({ children, title, subtitle }: AuthLayoutProps) {
                 {subtitle}
             </p>
         </div>
-
         {children}
 
       </motion.div>
     </div>
   );
-}
+} 
