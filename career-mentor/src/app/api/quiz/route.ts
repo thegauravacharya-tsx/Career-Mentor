@@ -1,13 +1,15 @@
 import { NextResponse } from 'next/server';
+import { getServerSession } from "next-auth"; // Import Session
+import { authOptions } from "@/lib/auth"; // Import Auth Options
+import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
 import { PromptTemplate } from "@langchain/core/prompts";
 import { StructuredOutputParser } from "@langchain/core/output_parsers";
 import { z } from "zod";
 import { db } from '@/lib/db';
-import { geminiModel } from '@/lib/gemini';
 
-// Define the Schema
+// ... (Keep your existing schema/parser definitions intact) ...
 const schema = z.object({
-  analysis: z.string(),
+  analysis: z.string().describe("A brief analysis of the user profile based on answers."),
   recommendations: z.array(
     z.object({
       title: z.string(),
@@ -22,7 +24,6 @@ const schema = z.object({
   )
 });
 
-type AssessmentResult = z.infer<typeof schema>;
 const parser = StructuredOutputParser.fromZodSchema(schema);
 
 export async function POST(req: Request) {
@@ -30,7 +31,19 @@ export async function POST(req: Request) {
     const body = await req.json();
     const { answers } = body;
 
-    if (!answers) return NextResponse.json({ error: "Missing answers" }, { status: 400 });
+    // 1. Check for User Session
+    const session = await getServerSession(authOptions);
+
+    if (!answers) {
+      return NextResponse.json({ error: "Missing answers" }, { status: 400 });
+    }
+
+    const model = new ChatGoogleGenerativeAI({
+        model: "gemini-flash-latest",
+        maxOutputTokens: 8192,
+        apiKey: process.env.GOOGLE_API_KEY,
+        temperature: 0.7,
+    });
 
     const formatInstructions = parser.getFormatInstructions();
 
@@ -38,10 +51,8 @@ export async function POST(req: Request) {
       template: `
         You are an expert Career Counselor. Analyze the following user answers:
         {answers}
-
         Based on this, recommend 3 specific Career Paths and 3 Educational Degrees.
-        
-        IMPORTANT: Return ONLY raw JSON. No markdown formatting.
+        IMPORTANT: You must strictly follow the JSON format below. Do not add markdown code blocks.
         {format_instructions}
       `,
       inputVariables: ["answers"],
@@ -49,20 +60,15 @@ export async function POST(req: Request) {
     });
 
     const input = await prompt.format({ answers: JSON.stringify(answers) });
+    const response = await model.invoke(input);
     
-    // Call Gemini
-    const response = await geminiModel.invoke(input);
-    
-    // Clean Output
     let content = response.content as string;
     content = content.replace(/```json/g, "").replace(/```/g, "").trim();
 
-    // Parse
-    const parsedResult = await parser.parse(content) as AssessmentResult;
+    const parsedResult = await parser.parse(content);
 
-    // Save to DB
-    const session = await db.assessmentSession.create({
-      data: {
+    // 2. Save with User Relation (if logged in)
+    const sessionData: any = {
         answers: answers,
         resultSummary: parsedResult.analysis,
         recommendations: {
@@ -77,35 +83,24 @@ export async function POST(req: Request) {
             futureScope: rec.futureScope
           }))
         }
-      },
-      include: { recommendations: true }
+    };
+
+    // Link User ID if session exists
+    if (session && session.user) {
+        sessionData.userId = session.user.id;
+    }
+
+    const newAssessmentSession = await db.assessmentSession.create({
+      data: sessionData,
+      include: {
+        recommendations: true
+      }
     });
 
-    return NextResponse.json({ id: session.id });
+    return NextResponse.json({ id: newAssessmentSession.id });
 
-    } catch (error: any) {
-    console.error("AI Error Details:", error); // Log full object to terminal
-
-    // 1. Handle Rate Limits (429)
-    if (error.message?.includes("429") || error.status === 429) {
-      return NextResponse.json(
-        { error: "AI is busy. Please wait 10 seconds and try again." }, 
-        { status: 429 }
-      );
-    }
-
-    // 2. Handle Model Not Found (404) - Helps debug if model name changes again
-    if (error.message?.includes("404") || error.status === 404) {
-       return NextResponse.json(
-        { error: "AI Configuration Error: Model not found. Check server logs." }, 
-        { status: 404 }
-      );
-    }
-
-    // 3. Generic Error
-    return NextResponse.json(
-      { error: error.message || "Failed to generate recommendations." }, 
-      { status: 500 }
-    );
+  } catch (error) {
+    console.error("AI Error:", error);
+    return NextResponse.json({ error: "Failed to generate recommendations." }, { status: 500 });
   }
 }

@@ -4,11 +4,8 @@
 import { useState } from 'react';
 import { Recommendation } from '@prisma/client';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Progress } from '@/components/ui/progress';
 
-// Helper for color coding
 const getMatchColor = (score: number) => {
     if (score >= 80) return "bg-green-100 text-green-700 border-green-200";
     if (score >= 50) return "bg-yellow-100 text-yellow-700 border-yellow-200";

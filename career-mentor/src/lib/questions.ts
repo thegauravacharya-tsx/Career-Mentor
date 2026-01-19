@@ -1,5 +1,3 @@
-// src/lib/questions.ts
-
 export type QuestionType = 'choice' | 'slider';
 
 export interface Question {
@@ -7,8 +5,8 @@ export interface Question {
   text: string;
   type: QuestionType;
   options?: string[]; // For multiple choice
-  minLabel?: string;  // For sliders
-  maxLabel?: string;  // For sliders
+  minLabel?: string; 
+  maxLabel?: string; 
 }
 
 export const CAREER_QUESTIONS: Question[] = [

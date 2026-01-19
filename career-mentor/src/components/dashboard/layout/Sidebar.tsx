@@ -46,7 +46,6 @@ export function Sidebar({ userId }: { userId: string }) {
       <nav className="space-y-2 flex-1">
         {navItems.map((item) => {
           const isActive = pathname === item.href || (item.href !== "/dashboard" && pathname.startsWith(item.href));
-          // Quick fix for dynamic dashboard route active state
           const dynamicHref = item.href === "/dashboard" ? `/dashboard/${userId}` : item.href;
           
           return (

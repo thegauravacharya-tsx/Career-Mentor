@@ -4,12 +4,11 @@ import { Button } from "@/components/ui/button";
 
 export function Footer() {
   return (
-    // Updated Wrapper: Rounded Top corners for the "Curve" effect
-    <div className="bg-white pt-10"> {/* Spacer to show the curve against white background */}
+    <div className="bg-white pt-10">
       <footer className="w-full bg-[#050505] py-12 md:py-20 px-4 md:px-6 rounded-t-[3rem] md:rounded-t-[5rem] overflow-hidden">
         <div className="max-w-[1200px] mx-auto grid grid-cols-1 md:grid-cols-12 gap-4 font-sans">
           
-          {/* --- Card 1: Main CTA (Top Left) --- */}
+          {/* Card 1: Main CTA */}
           <div className="md:col-span-7 bg-[#111111] rounded-[32px] p-8 md:p-12 flex flex-col justify-between min-h-[340px] border border-white/5 hover:border-white/10 transition-colors">
             <div className="space-y-2">
               <h2 className="text-3xl md:text-4xl font-medium text-white tracking-tight">
@@ -34,7 +33,7 @@ export function Footer() {
             </div>
           </div>
 
-          {/* --- Card 2: Focus Areas (Top Right) --- */}
+          {/* Card 2: Focus Areas */}
           <div className="md:col-span-5 bg-[#111111] rounded-[32px] p-8 md:p-12 flex flex-col border border-white/5 hover:border-white/10 transition-colors">
             <h3 className="text-2xl font-medium text-white mb-10 leading-snug">
               Are you planning your <br />
@@ -52,7 +51,7 @@ export function Footer() {
             </div>
           </div>
 
-          {/* --- Card 3: Links (Bottom Left) --- */}
+          {/* Card 3: Links (Bottom Left) */}
           <div className="md:col-span-7 bg-[#111111] rounded-[32px] p-8 md:p-12 flex flex-col justify-between border border-white/5 min-h-[300px]">
             <div className="space-y-2">
               <h3 className="text-2xl font-medium text-white">Check out these links</h3>
@@ -81,7 +80,7 @@ export function Footer() {
             </div>
           </div>
 
-          {/* --- Right Column Wrapper --- */}
+          {/* Right Column Wrapper */}
           <div className="md:col-span-5 flex flex-col gap-4">
               <div className="grid grid-cols-3 gap-4 h-[140px]">
                   <Link href="#" className="bg-[#111111] rounded-[24px] border border-white/5 flex items-center justify-center text-white hover:bg-[#1A1A1A] transition-colors group">
