@@ -75,10 +75,16 @@ model User {
   emailVerified DateTime?
   image         String?
   password      String?
+
+  phoneNumber   String?
+  country       String?
+  city          String?
+  zipCode       String?
+
   createdAt     DateTime  @default(now())
+
   accounts      Account[]
   sessions      Session[]
-
   assessments   AssessmentSession[]
   savedResources SavedResource[]
 }

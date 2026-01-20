@@ -49,7 +49,8 @@ export default function HomePage() {
           <section className="min-h-screen flex items-center justify-center px-6 relative border-b border-slate-100 py-32 md:py-0">
             <div className="max-w-7xl w-full mx-auto grid md:grid-cols-2 gap-12 items-center">
               
-              <div className="relative z-10">
+              {/* Added mt-12 md:mt-24 to push text down */}
+              <div className="relative z-10 mt-12 md:mt-24 pt-10">
                 <FadeIn delay={0.1}>
                   <h1 className="text-6xl md:text-[5.5rem] font-bold tracking-[-0.035em] leading-[0.9] text-slate-950 mb-8">
                     Career intelligence <br />

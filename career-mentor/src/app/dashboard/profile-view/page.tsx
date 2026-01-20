@@ -7,7 +7,8 @@ import { Sidebar } from "@/components/dashboard/layout/Sidebar";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { Edit2, Mail, MapPin, Phone, ShieldCheck, User } from "lucide-react";
+import { Edit2, Mail, MapPin, Phone, ShieldCheck, Globe, Building2, Map } from "lucide-react";
+import { countryList } from "@/lib/data/country-list"; // Import data
 
 export default async function ProfileViewPage() {
   const session = await getServerSession(authOptions);
@@ -22,6 +23,13 @@ export default async function ProfileViewPage() {
 
   if (!user) return <div>User not found</div>;
 
+  // Helper to get full country name
+  const getCountryName = (code: string | null) => {
+    if (!code) return "Not set";
+    const found = countryList.find(c => c.code === code);
+    return found ? found.label : code;
+  };
+
   return (
     <div className="min-h-screen bg-[#F2F4F7] font-sans selection:bg-slate-900 selection:text-white flex">
       
@@ -32,18 +40,27 @@ export default async function ProfileViewPage() {
       <div className="flex-1 ml-[280px]">
         <main className="p-8 pt-12 max-w-[1000px] mx-auto">
             
+            {/* Header Layout: Text Left / Button Right */}
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8">
+                <div>
+                    <h1 className="text-3xl font-bold text-slate-900 tracking-tight">My Profile</h1>
+                    <p className="text-slate-500 mt-2 text-lg">Manage your personal information and account settings.</p>
+                </div>
+                
+                {/* Edit Button */}
+                <Link href="/dashboard/profile">
+                    <Button variant="outline" className="h-11 px-5 border-slate-200 text-slate-700 hover:bg-white hover:text-slate-900 font-medium rounded-xl shadow-sm bg-white">
+                        <Edit2 className="w-4 h-4 mr-2" />
+                        Edit Profile
+                    </Button>
+                </Link>
+            </div>
+
             {/* Profile Header Card */}
             <div className="bg-white rounded-[32px] shadow-sm border border-slate-200 overflow-hidden relative mb-8">
                 {/* Cover Photo */}
                 <div className="h-48 bg-gradient-to-r from-slate-900 to-slate-800 relative">
                     <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20" />
-                    
-                    {/* Edit Button (Top Right) */}
-                    <Link href="/dashboard/profile" className="absolute top-6 right-6">
-                        <Button className="bg-white/10 hover:bg-white/20 text-white border border-white/10 backdrop-blur-md rounded-xl h-10 px-4">
-                            <Edit2 className="w-4 h-4 mr-2" /> Edit Profile
-                        </Button>
-                    </Link>
                 </div>
 
                 <div className="px-8 pb-8">
@@ -68,6 +85,7 @@ export default async function ProfileViewPage() {
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8 border-t border-slate-100 pt-8">
                         
+                        {/* Contact Info */}
                         <div className="space-y-6">
                             <h3 className="font-bold text-slate-900 text-lg">Contact Information</h3>
                             
@@ -88,35 +106,44 @@ export default async function ProfileViewPage() {
                                     </div>
                                     <div>
                                         <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Phone</p>
-                                        <p className="text-slate-900 font-medium">Not set</p>
+                                        <p className="text-slate-900 font-medium">{user.phoneNumber || "Not set"}</p>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
+                        {/* Location & Details (Connected to DB) */}
                         <div className="space-y-6">
-                            <h3 className="font-bold text-slate-900 text-lg">Location & Security</h3>
+                            <h3 className="font-bold text-slate-900 text-lg">Location & Details</h3>
                             
                             <div className="space-y-4">
                                 <div className="flex items-center gap-4 p-4 rounded-2xl bg-slate-50 border border-slate-100">
                                     <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center border border-slate-200 shadow-sm text-slate-500">
-                                        <MapPin className="w-5 h-5" />
+                                        <Globe className="w-5 h-5" />
                                     </div>
                                     <div>
-                                        <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Location</p>
-                                        <p className="text-slate-900 font-medium">San Francisco, US</p>
+                                        <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Country</p>
+                                        <p className="text-slate-900 font-medium">{getCountryName(user.country)}</p>
                                     </div>
                                 </div>
 
-                                <div className="flex items-center gap-4 p-4 rounded-2xl bg-slate-50 border border-slate-100">
-                                    <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center border border-slate-200 shadow-sm text-green-600">
-                                        <ShieldCheck className="w-5 h-5" />
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div className="flex items-center gap-3 p-4 rounded-2xl bg-slate-50 border border-slate-100">
+                                        <div className="w-9 h-9 bg-white rounded-xl flex items-center justify-center border border-slate-200 shadow-sm text-slate-500">
+                                            <Building2 className="w-4 h-4" />
+                                        </div>
+                                        <div>
+                                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">City</p>
+                                            <p className="text-slate-900 font-medium text-sm">{user.city || "Not set"}</p>
+                                        </div>
                                     </div>
-                                    <div>
-                                        <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Account Status</p>
-                                        <div className="flex items-center gap-2">
-                                            <p className="text-slate-900 font-medium">Verified</p>
-                                            <CheckBadge />
+                                    <div className="flex items-center gap-3 p-4 rounded-2xl bg-slate-50 border border-slate-100">
+                                        <div className="w-9 h-9 bg-white rounded-xl flex items-center justify-center border border-slate-200 shadow-sm text-slate-500">
+                                            <Map className="w-4 h-4" />
+                                        </div>
+                                        <div>
+                                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Zip Code</p>
+                                            <p className="text-slate-900 font-medium text-sm">{user.zipCode || "Not set"}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -131,14 +158,4 @@ export default async function ProfileViewPage() {
       </div>
     </div>
   );
-}
-
-function CheckBadge() {
-    return (
-        <div className="bg-green-100 text-green-600 rounded-full p-0.5">
-            <svg viewBox="0 0 24 24" fill="none" className="w-3 h-3" stroke="currentColor" strokeWidth="4">
-                <path d="M5 13l4 4L19 7" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-        </div>
-    )
 }

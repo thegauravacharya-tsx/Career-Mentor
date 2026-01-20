@@ -1,15 +1,14 @@
 import { NextResponse } from 'next/server';
-import { getServerSession } from "next-auth"; // Import Session
-import { authOptions } from "@/lib/auth"; // Import Auth Options
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
 import { PromptTemplate } from "@langchain/core/prompts";
 import { StructuredOutputParser } from "@langchain/core/output_parsers";
 import { z } from "zod";
 import { db } from '@/lib/db';
 
-// ... (Keep your existing schema/parser definitions intact) ...
 const schema = z.object({
-  analysis: z.string().describe("A brief analysis of the user profile based on answers."),
+  analysis: z.string(),
   recommendations: z.array(
     z.object({
       title: z.string(),
@@ -31,12 +30,10 @@ export async function POST(req: Request) {
     const body = await req.json();
     const { answers } = body;
 
-    // 1. Check for User Session
+    // 1. Check Session (Optional now)
     const session = await getServerSession(authOptions);
 
-    if (!answers) {
-      return NextResponse.json({ error: "Missing answers" }, { status: 400 });
-    }
+    if (!answers) return NextResponse.json({ error: "Missing answers" }, { status: 400 });
 
     const model = new ChatGoogleGenerativeAI({
         model: "gemini-flash-latest",
@@ -46,15 +43,8 @@ export async function POST(req: Request) {
     });
 
     const formatInstructions = parser.getFormatInstructions();
-
     const prompt = new PromptTemplate({
-      template: `
-        You are an expert Career Counselor. Analyze the following user answers:
-        {answers}
-        Based on this, recommend 3 specific Career Paths and 3 Educational Degrees.
-        IMPORTANT: You must strictly follow the JSON format below. Do not add markdown code blocks.
-        {format_instructions}
-      `,
+      template: `You are an expert Career Counselor. Analyze: {answers}. Recommend 3 Careers and 3 Degrees. JSON only. {format_instructions}`,
       inputVariables: ["answers"],
       partialVariables: { format_instructions: formatInstructions },
     });
@@ -64,10 +54,9 @@ export async function POST(req: Request) {
     
     let content = response.content as string;
     content = content.replace(/```json/g, "").replace(/```/g, "").trim();
-
     const parsedResult = await parser.parse(content);
 
-    // 2. Save with User Relation (if logged in)
+    // 2. Prepare Data
     const sessionData: any = {
         answers: answers,
         resultSummary: parsedResult.analysis,
@@ -85,22 +74,20 @@ export async function POST(req: Request) {
         }
     };
 
-    // Link User ID if session exists
+    // 3. Link User ONLY if logged in
     if (session && session.user) {
         sessionData.userId = session.user.id;
     }
 
     const newAssessmentSession = await db.assessmentSession.create({
       data: sessionData,
-      include: {
-        recommendations: true
-      }
+      include: { recommendations: true }
     });
 
     return NextResponse.json({ id: newAssessmentSession.id });
 
   } catch (error) {
     console.error("AI Error:", error);
-    return NextResponse.json({ error: "Failed to generate recommendations." }, { status: 500 });
+    return NextResponse.json({ error: "Failed" }, { status: 500 });
   }
 }

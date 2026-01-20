@@ -3,12 +3,13 @@
 import { useState } from "react";
 import { User } from "@prisma/client";
 import { useForm } from "react-hook-form";
+import { useRouter } from "next/navigation"; // Router
 import { Camera, Loader2, Save, ChevronDown, Check } from "lucide-react";
 import ReactCountryFlag from "react-country-flag";
-
 import { phoneCodes } from "@/lib/data/phone-codes";
 import { countryList } from "@/lib/data/country-list";
 
+// Components
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -39,21 +40,26 @@ type ProfileFormData = {
 };
 
 export function ProfileForm({ user }: { user: User }) {
+  const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
-  
   const [openPhone, setOpenPhone] = useState(false);
   const [openCountry, setOpenCountry] = useState(false);
 
+  // Split name safely
+  const splitName = (user.name || "").split(" ");
+  const initialFirst = splitName[0] || "";
+  const initialLast = splitName.slice(1).join(" ") || "";
+  
   const { register, handleSubmit, setValue, watch } = useForm<ProfileFormData>({
     defaultValues: {
-        firstName: user.name?.split(" ")[0] || "",
-        lastName: user.name?.split(" ")[1] || "",
-        phoneDialCode: "+1",
-        phoneNumber: "",
-        country: "US", 
-        city: "",
-        zipCode: "",
+        firstName: initialFirst,
+        lastName: initialLast,
+        phoneDialCode: "+977",
+        phoneNumber: user.phoneNumber || "",
+        country: user.country || "US", 
+        city: user.city || "",
+        zipCode: user.zipCode || "",
     }
   });
 
@@ -65,11 +71,24 @@ export function ProfileForm({ user }: { user: User }) {
 
   const onSubmit = async (data: ProfileFormData) => {
     setIsLoading(true);
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-    console.log("Updated Data:", data);
-    setIsLoading(false);
-    setIsSaved(true);
-    setTimeout(() => setIsSaved(false), 3000);
+    
+    try {
+        const res = await fetch("/api/user/profile", {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(data)
+        });
+
+        if (!res.ok) throw new Error("Failed to update");
+
+        setIsSaved(true);
+        router.refresh(); // REFRESHES SERVER DATA (Critical for View Page update)
+        setTimeout(() => setIsSaved(false), 3000);
+    } catch (error) {
+        alert("Something went wrong saving your profile.");
+    } finally {
+        setIsLoading(false);
+    }
   };
 
   return (
@@ -95,8 +114,8 @@ export function ProfileForm({ user }: { user: User }) {
 
       <form onSubmit={handleSubmit(onSubmit)}>
         
-        {/* Avatar Section */}
-        <div className="mb-12 flex items-center gap-8">
+        {/* Avatar (Visual only for now unless upload logic added) */}
+        <div className="mb-14 flex items-center gap-8">
             <div className="relative group cursor-pointer">
                 <Avatar className="w-24 h-24 border-4 border-slate-50 shadow-sm">
                     <AvatarImage src={user.image || ""} />
@@ -104,28 +123,14 @@ export function ProfileForm({ user }: { user: User }) {
                         {user.name?.[0] || "U"}
                     </AvatarFallback>
                 </Avatar>
-                <div className="absolute inset-0 bg-black/40 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                    <Camera className="w-8 h-8 text-white" />
-                </div>
-                <div className="absolute bottom-0 right-0 w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-md border border-slate-100 text-slate-600">
-                    <Camera className="w-4 h-4" />
-                </div>
             </div>
             <div>
                 <h3 className="font-semibold text-slate-900">Profile Picture</h3>
-                <p className="text-sm text-slate-500 mb-4">PNG, JPG up to 5MB</p>
-                <div className="flex gap-3">
-                    <Button type="button" variant="outline" size="sm" className="rounded-xl border-slate-200 h-9 text-xs">
-                        Upload New
-                    </Button>
-                    <Button type="button" variant="ghost" size="sm" className="rounded-xl text-red-500 hover:text-red-600 hover:bg-red-50 h-9 text-xs">
-                        Delete
-                    </Button>
-                </div>
+                <p className="text-sm text-slate-500 mb-4">Your avatar is managed via Google.</p>
             </div>
         </div>
 
-        {/*  FORM GRID  */}
+        {/* --- FORM GRID --- */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             
             {/* First Name */}
@@ -280,11 +285,11 @@ export function ProfileForm({ user }: { user: User }) {
         </div>
 
         {/* Footer Actions */}
-        <div className="mt-12 flex justify-end gap-4 border-t border-slate-100 pt-8">
-            <Button type="button" variant="ghost" className="h-11 rounded-xl text-slate-500 hover:text-slate-900">
+        <div className="mt-16 flex justify-end gap-4 border-t border-slate-100 pt-8">
+            <Button type="button" variant="ghost" className="h-12 rounded-xl text-slate-500 hover:text-slate-900 text-[15px]">
                 Cancel
             </Button>
-            <Button type="submit" disabled={isLoading} className="h-11 px-8 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold shadow-lg shadow-blue-200">
+            <Button type="submit" disabled={isLoading} className="h-12 px-10 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold shadow-lg shadow-blue-200 text-[15px]">
                 {isLoading ? "Saving..." : "Save Changes"}
             </Button>
         </div>
