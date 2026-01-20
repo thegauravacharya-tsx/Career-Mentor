@@ -16,16 +16,26 @@ export function ClarityChart({ score }: { score: number }) {
             <p className="text-4xl font-bold text-slate-900 tracking-tighter">
                 {score}<span className="text-2xl text-slate-400">%</span>
             </p>
-            <span className="inline-block mt-2 px-3 py-1 bg-amber-100 text-amber-700 text-xs font-bold rounded-full">
-                +5% this week
-            </span>
+            
+            {score < 30 ? (
+                 <span className="inline-block mt-2 px-3 py-1 bg-slate-100 text-slate-600 text-xs font-bold rounded-full">
+                    Start exploring
+                 </span>
+            ) : score < 70 ? (
+                <span className="inline-block mt-2 px-3 py-1 bg-amber-100 text-amber-700 text-xs font-bold rounded-full">
+                    Gaining focus
+                </span>
+            ) : (
+                <span className="inline-block mt-2 px-3 py-1 bg-green-100 text-green-700 text-xs font-bold rounded-full">
+                    High clarity
+                </span>
+            )}
         </div>
       </div>
 
       {/* Visual Chart */}
       <div className="absolute bottom-[-20px] right-[-20px] md:static md:mt-8 flex justify-center">
         <div className="relative w-48 h-48">
-            {/* Background Circle */}
             <svg className="w-full h-full transform -rotate-90">
                 <circle
                     cx="96"
@@ -36,7 +46,6 @@ export function ClarityChart({ score }: { score: number }) {
                     fill="transparent"
                     className="text-slate-100"
                 />
-                {/* Progress Circle */}
                 <circle
                     cx="96"
                     cy="96"
@@ -50,7 +59,6 @@ export function ClarityChart({ score }: { score: number }) {
                     className="text-blue-600 transition-all duration-1000 ease-out"
                 />
             </svg>
-            {/* Center Text */}
             <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center">
                 <span className="text-3xl font-bold text-slate-900">{score}</span>
             </div>

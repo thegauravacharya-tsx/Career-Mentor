@@ -4,6 +4,8 @@ import { useState } from "react";
 import { Recommendation } from "@prisma/client";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { useNotifications } from "@/context/NotificationContext";
+import { NOTIFICATION_TRIGGERS } from "@/lib/notifications-config";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Bookmark, Check, ChevronRight, TrendingUp, BarChart3 } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -17,6 +19,7 @@ export default function ResultCard({ data, isInitiallySaved }: ResultCardProps) 
   const [isSaved, setIsSaved] = useState(isInitiallySaved);
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
+  const { triggerNotification } = useNotifications();
 
   const toggleSave = async (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -38,6 +41,15 @@ export default function ResultCard({ data, isInitiallySaved }: ResultCardProps) 
       });
 
       if (!res.ok) throw new Error();
+
+      if (!isSaved) {
+      if (data.type === 'CAREER') {
+        triggerNotification(NOTIFICATION_TRIGGERS.ACTION_SAVE_CAREER);
+        } else {
+            triggerNotification(NOTIFICATION_TRIGGERS.ACTION_SAVE_DEGREE);
+        }
+      }
+
       router.refresh(); // Refresh server data
     } catch (error) {
       setIsSaved(previousState); // Revert on error
@@ -68,7 +80,7 @@ export default function ResultCard({ data, isInitiallySaved }: ResultCardProps) 
                     <Button 
                         size="icon" 
                         variant="ghost" 
-                        className={`h-9 w-9 rounded-full ${isSaved ? "bg-slate-900 text-white hover:bg-slate-800" : "bg-slate-50 text-slate-400 hover:text-slate-900"}`}
+                        className={`h-9 w-9 rounded-full ${isSaved ? "bg-slate-900 text-white hover:bg-slate-800 hover:text-white" : "bg-slate-50 text-slate-400 hover:text-slate-900"}`}
                         onClick={toggleSave}
                         disabled={isLoading}
                     >

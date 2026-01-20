@@ -6,20 +6,21 @@ import { usePathname } from "next/navigation";
 import { 
   LayoutDashboard, 
   History, 
-  UserCircle, 
   Sparkles, 
   LogOut,
   Bookmark
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { signOut } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react"; // Added useSession
 import { cn } from "@/lib/utils";
+import { UpgradeModal } from "@/components/dashboard/UpgradeModal";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export function Sidebar({ userId }: { userId: string }) {
   const pathname = usePathname();
+  const { data: session } = useSession(); // Fetch client-side session for avatar/name
   const [hasSavedItems, setHasSavedItems] = useState(false);
 
-  // Check if user has saved items to conditionally render the Saved link
   useEffect(() => {
     fetch('/api/user/sidebar-stats')
       .then(res => res.json())
@@ -41,7 +42,6 @@ export function Sidebar({ userId }: { userId: string }) {
       {/* Navigation */}
       <nav className="space-y-2 flex-1">
         
-        {/* Dashboard */}
         <Link href={`/dashboard/${userId}`}>
             <div className={cn(
             "flex items-center gap-3 px-4 py-3.5 rounded-2xl transition-all duration-200 group",
@@ -52,7 +52,6 @@ export function Sidebar({ userId }: { userId: string }) {
             </div>
         </Link>
 
-        {/* History */}
         <Link href="/dashboard/history">
             <div className={cn(
             "flex items-center gap-3 px-4 py-3.5 rounded-2xl transition-all duration-200 group",
@@ -63,7 +62,6 @@ export function Sidebar({ userId }: { userId: string }) {
             </div>
         </Link>
 
-        {/* Saved Items (Conditional) */}
         {hasSavedItems && (
             <Link href="/dashboard/saved">
                 <div className={cn(
@@ -76,21 +74,10 @@ export function Sidebar({ userId }: { userId: string }) {
             </Link>
         )}
 
-        {/* Profile Settings */}
-        <Link href="/dashboard/profile">
-            <div className={cn(
-            "flex items-center gap-3 px-4 py-3.5 rounded-2xl transition-all duration-200 group",
-            pathname === "/dashboard/profile" ? "bg-white/10 text-white font-medium" : "text-slate-400 hover:bg-white/5 hover:text-white"
-            )}>
-            <UserCircle className={cn("w-5 h-5", pathname === "/dashboard/profile" ? "text-blue-400" : "text-slate-500 group-hover:text-white")} />
-            <span className="text-[15px]">Profile Settings</span>
-            </div>
-        </Link>
-
       </nav>
 
       {/* Logout */}
-      <div className="mb-6">
+      <div className="mb-4">
          <button 
             onClick={() => signOut({ callbackUrl: "/login" })}
             className="flex items-center gap-3 px-4 py-3 rounded-2xl text-slate-400 hover:text-red-400 hover:bg-red-500/10 transition-all w-full text-left"
@@ -101,18 +88,40 @@ export function Sidebar({ userId }: { userId: string }) {
       </div>
 
       {/* Pro Card */}
-      <div className="bg-gradient-to-br from-[#1F1F1F] to-[#111111] p-5 rounded-[24px] border border-white/5 relative overflow-hidden">
+      <div className="bg-gradient-to-br from-[#1F1F1F] to-[#111111] p-5 rounded-[24px] border border-white/5 relative overflow-hidden mb-4">
         <div className="absolute top-0 right-0 w-24 h-24 bg-blue-500/20 blur-[40px] rounded-full pointer-events-none" />
         <div className="relative z-10">
             <h4 className="font-bold text-sm mb-1 text-white">Upgrade to Pro</h4>
             <p className="text-xs text-slate-400 mb-3 leading-relaxed">
                 Unlock advanced AI mapping.
             </p>
-            <Button size="sm" className="w-full bg-[#2A2A2A] hover:bg-[#333] border border-white/5 text-white text-xs h-8 rounded-lg">
-                Upgrade Now
-            </Button>
+            <UpgradeModal>
+                <Button size="sm" className="w-full bg-[#2A2A2A] hover:bg-[#333] border border-white/5 text-white text-xs h-8 rounded-lg cursor-pointer">
+                    Upgrade Now
+                </Button>
+            </UpgradeModal>
         </div>
       </div>
+
+      {/* --- NEW: User Profile Card --- */}
+      <Link href="/dashboard/profile-view">
+        <div className="flex items-center gap-3 p-3 rounded-[20px] hover:bg-white/5 transition-colors cursor-pointer border border-transparent hover:border-white/5">
+            <Avatar className="h-10 w-10 border-2 border-white/10 shadow-sm">
+                <AvatarImage src={session?.user?.image || ""} />
+                <AvatarFallback className="bg-gradient-to-tr from-blue-600 to-indigo-600 text-white font-bold text-xs">
+                    {session?.user?.name?.[0] || "U"}
+                </AvatarFallback>
+            </Avatar>
+            <div className="flex-1 min-w-0">
+                <p className="text-sm font-semibold text-white truncate">
+                    {session?.user?.name || "User"}
+                </p>
+                <p className="text-xs text-slate-500 truncate">
+                    View Profile
+                </p>
+            </div>
+        </div>
+      </Link>
 
     </aside>
   );

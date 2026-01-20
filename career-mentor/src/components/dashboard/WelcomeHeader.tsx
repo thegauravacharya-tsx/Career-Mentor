@@ -1,12 +1,19 @@
+"use client";
+
+import { useState, useEffect } from "react";
 import { Bell } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export function WelcomeHeader({ userName }: { userName: string }) {
-  const date = new Date().toLocaleDateString("en-US", { 
-    weekday: 'long', 
-    day: 'numeric', 
-    month: 'long' 
-  });
+  const [dateStr, setDateStr] = useState("");
+
+  useEffect(() => {
+    setDateStr(new Date().toLocaleDateString("en-US", { 
+        weekday: 'long', 
+        day: 'numeric', 
+        month: 'long' 
+    }));
+  }, []);
 
   return (
     <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
@@ -20,8 +27,8 @@ export function WelcomeHeader({ userName }: { userName: string }) {
       </div>
       
       <div className="flex items-center gap-4 bg-white p-2 pl-6 pr-2 rounded-full border border-slate-200 shadow-sm">
-        <span className="text-sm font-medium text-slate-500 hidden sm:block">
-          {date}
+        <span className="text-sm font-medium text-slate-500 hidden sm:block min-w-[100px] text-right">
+          {dateStr}
         </span>
         <Button size="icon" variant="ghost" className="rounded-full hover:bg-slate-100 relative">
           <Bell className="w-5 h-5 text-slate-600" />
