@@ -61,17 +61,16 @@ export function Footer() {
             <div className="grid grid-cols-3 gap-8 mt-12">
               <div className="flex flex-col gap-3">
                   <span className="text-xs font-bold text-white mb-1">Home</span>
-                  <Link href="/about" className="text-sm text-white/50 hover:text-white transition-colors">About</Link>
-                  <Link href="/services" className="text-sm text-white/50 hover:text-white transition-colors">Services</Link>
+                  <Link href="/#" className="text-sm text-white/50 hover:text-white transition-colors">About</Link>
+                  <Link href="/methodology" className="text-sm text-white/50 hover:text-white transition-colors">Services</Link>
               </div>
               <div className="flex flex-col gap-3">
                   <span className="text-xs font-bold text-white mb-1">Contact</span>
                   <Link href="/contact" className="text-sm text-white/50 hover:text-white transition-colors">Contact us</Link>
               </div>
               <div className="flex flex-col gap-3">
-                  <span className="text-xs font-bold text-white mb-1">Legal</span>
-                  <Link href="/privacy" className="text-sm text-white/50 hover:text-white transition-colors">Privacy</Link>
-                  <Link href="/terms" className="text-sm text-white/50 hover:text-white transition-colors">Terms</Link>
+                  <span className="text-xs font-bold text-white mb-1">Waitlist</span>
+                  <Link href="/waitlist" className="text-sm text-white/50 hover:text-white transition-colors">Waitlist</Link>
               </div>
             </div>
 

@@ -7,6 +7,7 @@ import { CAREER_QUESTIONS, type Question } from "@/lib/questions";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Slider } from "@/components/ui/slider";
+import { LimitReachedModal } from "@/components/dashboard/LimitReachedModal";
 import { ArrowLeft, ArrowRight, Check, Sparkles, BrainCircuit, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -31,6 +32,7 @@ export default function AssessmentPage() {
   const currentQuestion: Question = CAREER_QUESTIONS[currentIndex];
   const progress = ((currentIndex + 1) / CAREER_QUESTIONS.length) * 100;
   const isAnswered = answers[currentQuestion.id] !== undefined;
+  const [showLimitModal, setShowLimitModal] = useState(false);
 
   // Handlers
   const handleSelect = (value: any) => {
@@ -59,6 +61,12 @@ export default function AssessmentPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ answers }),
       });
+
+      if (res.status === 403) {
+        setIsSubmitting(false);
+        setShowLimitModal(true);
+        return;
+      }
 
       if (!res.ok) throw new Error("Analysis failed");
       
@@ -100,6 +108,13 @@ export default function AssessmentPage() {
   return (
     <div className="min-h-screen bg-[#FDFDFD] text-slate-900 font-sans flex flex-col">
       <GrainOverlay />
+
+        <LimitReachedModal 
+          open={showLimitModal} 
+          onOpenChange={setShowLimitModal}
+          title="Assessment Limit Reached"
+          description="You have used all 3 free assessments included in the basic plan."
+       />
 
       {/* Header / Progress */}
       <header className="h-20 px-6 md:px-12 flex items-center justify-between border-b border-slate-100 bg-white/80 backdrop-blur-sm fixed top-0 w-full z-20">

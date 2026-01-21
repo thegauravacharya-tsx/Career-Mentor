@@ -13,202 +13,202 @@ export interface Question {
 export const CAREER_QUESTIONS: Question[] = [
   {
     id: "initiative_role_preference",
-    text: "When a high-priority project is launched, which role do you naturally gravitate toward to ensure its success?",
+    text: "When starting a new group project, what role do you naturally want?",
     type: "choice",
     options: [
-      "Architecting the complex logic and data structures behind the solution.",
-      "Designing the visual narrative and user experience to ensure it resonates emotionally.",
-      "Defining the strategic milestones and rallying the team to hit aggressive targets.",
-      "Optimizing the internal workflows and ensuring every detail meets quality standards."
+      "Figuring out the logic and how it will work.",
+      "Making it look good and easy to use.",
+      "Setting the goals and motivating the team.",
+      "Organizing the details and checking for mistakes."
     ],
     dimension: "RIASEC_Investigative"
   },
   {
     id: "operational_environment_vibe",
-    text: "How do you prefer to navigate your daily workflow regarding external stimulation and collaboration?",
+    text: "How do you prefer to work during the day?",
     type: "slider",
-    minLabel: "Deep Solo Focus",
-    maxLabel: "High-Energy Collaborative",
+    minLabel: "Quiet & Alone",
+    maxLabel: "Busy & With People",
     dimension: "Big5_Extraversion"
   },
   {
     id: "problem_solving_methodology",
-    text: "When faced with an ambiguous problem, what is your primary instinct for finding a resolution?",
+    text: "How do you solve a confusing problem?",
     type: "choice",
     options: [
-      "Breaking the problem down into measurable data points and empirical evidence.",
-      "Facilitating a group discussion to reach a consensus that honors everyone's perspective.",
-      "Building a hands-on prototype or physical model to test the theory in real-time.",
-      "Synthesizing disparate ideas into a completely novel, unconventional concept."
+      "I look at the facts and data.",
+      "I talk it out with others to agree on a plan.",
+      "I build a quick test version to see what happens.",
+      "I come up with a totally new and creative idea."
     ],
     dimension: "Cognitive_Style_Abstract"
   },
   {
     id: "structural_preference_continuum",
-    text: "In your professional environment, how much pre-defined structure do you require to perform at your peak?",
+    text: "How much structure do you need to do your best work?",
     type: "slider",
-    minLabel: "Fluid & Emergent",
-    maxLabel: "Highly Methodical",
+    minLabel: "Go with the flow",
+    maxLabel: "Step-by-step plan",
     dimension: "Big5_Conscientiousness"
   },
   {
     id: "value_delivery_priority",
-    text: "Which outcome provides you with the deepest sense of professional accomplishment?",
+    text: "What makes you feel most proud at the end of the day?",
     type: "choice",
     options: [
-      "Empowering an individual to overcome a personal or professional hurdle.",
-      "Negotiating a complex deal that secures resources for your organization.",
-      "Engineering a system that increases efficiency by an order of magnitude.",
-      "Uncovering a theoretical insight that changes how the industry views a problem."
+      "Helping someone overcome a personal challenge.",
+      "Convincing people to agree on a big deal.",
+      "Making a system run faster or better.",
+      "Learning something new that changes how I think."
     ],
     dimension: "RIASEC_Social"
   },
   {
     id: "technical_vs_human_focus",
-    text: "When evaluating a new career opportunity, where does your primary interest lie on the spectrum of 'What' versus 'Who'?",
+    text: "What are you more interested in understanding?",
     type: "slider",
-    minLabel: "Systems & Tech",
+    minLabel: "Technology & Systems",
     maxLabel: "People & Culture",
     dimension: "Domain_Interest_Systems"
   },
   {
     id: "conflict_navigation_style",
-    text: "In a boardroom disagreement regarding project direction, how do you typically intervene?",
+    text: "If your team disagrees on a plan, what do you do?",
     type: "choice",
     options: [
-      "I present a logical argument supported by objective metrics and case studies.",
-      "I act as a mediator to find a middle ground that preserves team harmony.",
-      "I challenge the status quo and push for the most ambitious, high-risk/high-reward path.",
-      "I provide a detailed risk assessment based on historical precedents."
+      "I use logic and facts to prove my point.",
+      "I try to find a compromise so everyone is happy.",
+      "I push for the boldest, most exciting idea.",
+      "I point out the risks and what could go wrong."
     ],
     dimension: "Big5_Agreeableness"
   },
   {
     id: "learning_breadth_depth",
-    text: "Regarding your professional development, do you prefer to be the 'Master of One' or the 'Jack of All Trades'?",
+    text: "Do you prefer to be an expert in one thing, or good at many things?",
     type: "slider",
-    minLabel: "Niche Specialist",
-    maxLabel: "Interdisciplinary Generalist",
+    minLabel: "Expert in One Thing",
+    maxLabel: "Good at Many Things",
     dimension: "Big5_Openness"
   },
   {
     id: "output_orientation_preference",
-    text: "If you were to spend a week working on a solo project, what would the tangible result most likely be?",
+    text: "If you worked on a project for a week, what would you want to show for it?",
     type: "choice",
     options: [
-      "A functional piece of software, a mechanical tool, or a physical craft.",
-      "A comprehensive research paper or a complex mathematical proof.",
-      "A portfolio of creative sketches, writing, or conceptual designs.",
-      "A rigorous project plan, audit report, or database schema."
+      "A working tool, machine, or piece of software.",
+      "A research paper or detailed analysis.",
+      "A collection of designs, art, or stories.",
+      "A detailed plan or organized report."
     ],
     dimension: "RIASEC_Realistic"
   },
   {
     id: "innovation_vs_refinement",
-    text: "Do you find more energy in the 'Zero to One' phase (creating something new) or the 'One to N' phase (perfecting something existing)?",
+    text: "What excites you more?",
     type: "slider",
-    minLabel: "Pioneering Innovation",
-    maxLabel: "Systemic Refinement",
+    minLabel: "Creating something new",
+    maxLabel: "Improving what exists",
     dimension: "Big5_Openness"
   },
   {
     id: "influence_motivation_type",
-    text: "What is your preferred mode of influencing the world around you?",
+    text: "How do you like to help the world?",
     type: "choice",
     options: [
-      "Leading and persuading others toward a collective vision.",
-      "Teaching and mentoring others to help them reach their potential.",
-      "Developing the underlying technology that others use to build their dreams.",
-      "Organizing the information and logistics that allow society to function smoothly."
+      "By leading and persuading people.",
+      "By teaching and mentoring others.",
+      "By building technology that people use.",
+      "By organizing information so things run smoothly."
     ],
     dimension: "RIASEC_Enterprising"
   },
   {
     id: "data_interpretation_style",
-    text: "When you look at a massive set of information, what is your cognitive instinct?",
+    text: "When you look at a lot of information, what do you do first?",
     type: "slider",
-    minLabel: "Identifying Patterns",
-    maxLabel: "Ensuring Accuracy",
+    minLabel: "Look for trends",
+    maxLabel: "Check for errors",
     dimension: "Cognitive_Style_Logic"
   },
   {
     id: "risk_appetite_scenario",
-    text: "How do you view career risks such as joining an early-stage startup versus a Fortune 500 company?",
+    text: "What kind of company would you rather work for?",
     type: "choice",
     options: [
-      "I prefer the stability and clear career ladders of established institutions.",
-      "I am drawn to the high-stakes environment where I can own a piece of the outcome.",
-      "I value the freedom to experiment and fail without rigid corporate oversight.",
-      "I prioritize the opportunity to work on the most complex problems, regardless of company size."
+      "A big, stable company with a clear career path.",
+      "A high-stakes startup where I could win big.",
+      "A place that lets me experiment without too many rules.",
+      "Anywhere that lets me solve the hardest problems."
     ],
     dimension: "Work_Environment_Stability"
   },
   {
     id: "concept_vs_execution",
-    text: "In a professional context, where does your curiosity naturally lean?",
+    text: "What are you more curious about?",
     type: "slider",
-    minLabel: "Theoretical 'Why'",
-    maxLabel: "Practical 'How'",
+    minLabel: "Why it works (Theory)",
+    maxLabel: "How to build it (Practice)",
     dimension: "RIASEC_Investigative"
   },
   {
     id: "decision_making_criteria",
-    text: "When forced to make a difficult decision with limited time, what do you trust most?",
+    text: "When you have to make a fast decision, what do you trust?",
     type: "choice",
     options: [
-      "My intuition and gut feeling regarding the creative potential.",
-      "The hard data and quantifiable evidence currently available.",
-      "The ethical implications and the impact on the people involved.",
-      "Standard operating procedures and established best practices."
+      "My gut feeling and intuition.",
+      "The facts and numbers.",
+      "How it will affect other people.",
+      "The official rules and procedures."
     ],
     dimension: "Big5_Conscientiousness"
   },
   {
     id: "public_vs_private_contribution",
-    text: "Do you prefer your contributions to be high-visibility (front-facing) or foundational (behind-the-scenes)?",
+    text: "Do you prefer to be in the spotlight or behind the scenes?",
     type: "slider",
-    minLabel: "Foundational / Internal",
-    maxLabel: "Public / Client-Facing",
+    minLabel: "Behind the Scenes",
+    maxLabel: "In the Spotlight",
     dimension: "Big5_Extraversion"
   },
   {
     id: "creative_constraint_preference",
-    text: "What kind of creative environment allows you to produce your best work?",
+    text: "How do you do your best creative work?",
     type: "choice",
     options: [
-      "A completely 'blank canvas' where I set all the rules and parameters.",
-      "A set of strict constraints that challenge me to find an elegant solution within bounds.",
-      "A collaborative brainstorming session where ideas are built iteratively.",
-      "A technical specification that requires precise translation into a final product."
+      "With total freedom and no rules.",
+      "With clear rules to solve a specific puzzle.",
+      "By brainstorming with a group.",
+      "By following a specific blueprint or plan."
     ],
     dimension: "RIASEC_Artistic"
   },
   {
     id: "competitive_atmosphere_preference",
-    text: "How do you feel about working in an environment where performance is publicly ranked and rewarded?",
+    text: "How do you feel about competition at work?",
     type: "slider",
-    minLabel: "Collaborative Harmony",
-    maxLabel: "High-Stakes Competition",
+    minLabel: "I prefer teamwork",
+    maxLabel: "I like to compete",
     dimension: "Big5_Agreeableness"
   },
   {
     id: "impact_scale_preference",
-    text: "Which scale of impact feels more meaningful to you personally?",
+    text: "What kind of impact do you want to have?",
     type: "choice",
     options: [
-      "Global Scale: Affecting millions of people through broad systems or policies.",
-      "Individual Scale: Deeply changing the life of one person at a time.",
-      "Organizational Scale: Ensuring a specific company or team operates perfectly.",
-      "Intellectual Scale: Advancing the frontier of human knowledge in a specific field."
+      "Changing systems that affect millions of people.",
+      "Deeply changing one person's life at a time.",
+      "Helping a specific team or company succeed.",
+      "Discovering new knowledge for the world."
     ],
     dimension: "RIASEC_Social"
   },
   {
     id: "stress_response_adaptability",
-    text: "How do you navigate high-pressure situations with multiple competing deadlines?",
+    text: "What kind of work pace do you prefer?",
     type: "slider",
-    minLabel: "Predictable & Calm",
-    maxLabel: "Fast-Paced & Intense",
+    minLabel: "Calm & Predictable",
+    maxLabel: "Fast & Intense",
     dimension: "Work_Environment_Risk"
   }
 ];

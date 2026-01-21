@@ -7,7 +7,8 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Bookmark, Check, ChevronRight, TrendingUp, BarChart3 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { LoginGateModal } from "@/components/LoginGateModal"; 
+import { LoginGateModal } from "@/components/LoginGateModal";
+import { LimitReachedModal } from "@/components/dashboard/LimitReachedModal";
 
 interface ResultCardProps {
   data: Recommendation;
@@ -21,13 +22,15 @@ export default function ResultCard({ data, isInitiallySaved, isGuest = false }: 
   const [isLoading, setIsLoading] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false); 
   const router = useRouter();
+  const [showLimitModal, setShowLimitModal] = useState(false);
 
   const toggleSave = async (e: React.MouseEvent) => {
     e.stopPropagation();
-    // Use isGuest here
+
     if (isGuest) return; 
 
     setIsLoading(true);
+
     const previousState = isSaved;
     setIsSaved(!isSaved);
 
@@ -42,6 +45,13 @@ export default function ResultCard({ data, isInitiallySaved, isGuest = false }: 
           data: data,
         }),
       });
+    
+      if (res.status === 403) {
+        setIsSaved(previousState); // Revert UI
+        setShowLimitModal(true);   // Show Upgrade Modal
+        return;
+      }
+
       if (!res.ok) throw new Error();
       router.refresh();
     } catch (error) {
@@ -72,6 +82,13 @@ export default function ResultCard({ data, isInitiallySaved, isGuest = false }: 
             onOpenChange={setShowLoginModal} 
             title="Unlock Detailed Insights" 
             description="Sign in to view full career details, salary outlook, and required skills."
+        />
+
+        <LimitReachedModal 
+            open={showLimitModal} 
+            onOpenChange={setShowLimitModal}
+            title="Saved Items Limit Reached"
+            description="Free accounts are limited to 5 saved careers and 5 saved degrees."
         />
 
         <Dialog>

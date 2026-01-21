@@ -29,9 +29,21 @@ export async function POST(req: Request) {
   try {
     const body = await req.json();
     const { answers } = body;
-
-    // 1. Check Session (Optional now)
+    
     const session = await getServerSession(authOptions);
+    // 1. Registered User Limit Check
+    if (session?.user) {
+        const count = await db.assessmentSession.count({
+            where: { userId: session.user.id }
+        });
+
+        if (count >= 3) {
+            return NextResponse.json(
+                { error: "LIMIT_REACHED", message: "You have reached the limit of 3 free assessments." },
+                { status: 403 }
+            );
+        }
+    }
 
     if (!answers) return NextResponse.json({ error: "Missing answers" }, { status: 400 });
 

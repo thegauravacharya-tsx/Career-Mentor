@@ -113,7 +113,6 @@ export default function ContactPage() {
                 transition={{ duration: 0.4 }}
                 className="bg-white p-8 md:p-10 rounded-[2rem] border border-slate-200 shadow-sm"
             >
-                {/* Visual Fix: Increased gap from space-y-6 to space-y-8 */}
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
                     
                     <div className="space-y-2">

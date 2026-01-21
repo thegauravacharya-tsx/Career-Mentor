@@ -20,33 +20,38 @@ export async function POST(req: Request) {
     const body = await req.json();
     const { resourceId, type, title, matchScore, data } = saveSchema.parse(body);
 
-    // Check if already saved
+    const userId = session.user.id;
+
+    // Check if toggling OFF (Unsave)
     const existing = await db.savedResource.findUnique({
       where: {
-        userId_resourceId: {
-          userId: session.user.id,
-          resourceId: resourceId,
-        },
+        userId_resourceId: { userId, resourceId },
       },
     });
 
     if (existing) {
-      // Toggle OFF (Unsave)
-      await db.savedResource.delete({
-        where: { id: existing.id },
-      });
+      await db.savedResource.delete({ where: { id: existing.id } });
       return NextResponse.json({ saved: false });
     } else {
-      // Toggle ON (Save)
+      // --- LIMIT CHECK LOGIC ---
+      // Free User Limits: 5 Careers, 5 Degrees
+      
+      // 1. Count existing saved items of this type
+      const count = await db.savedResource.count({
+        where: { userId, type }
+      });
+
+      // Limit Threshold
+      if (count >= 5) {
+        return NextResponse.json(
+            { error: "LIMIT_REACHED", message: `You can only save 5 ${type.toLowerCase()}s on the free plan.` }, 
+            { status: 403 }
+        );
+      }
+
+      // 2. Save if under limit
       await db.savedResource.create({
-        data: {
-          userId: session.user.id,
-          resourceId,
-          type,
-          title,
-          matchScore,
-          data,
-        },
+        data: { userId, resourceId, type, title, matchScore, data },
       });
       return NextResponse.json({ saved: true });
     }
